@@ -1,5 +1,12 @@
 package codigo;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -11,7 +18,46 @@ package codigo;
  * @author XP
  */
 public class VentanaInicio extends javax.swing.JFrame {
-
+    
+    Connection conexion; //almacena la conexion al servidor de BBDD
+    
+    Statement estado; //almacena el estado de la conexión
+    
+    ResultSet resultado; //almacena el resultado de la  consulta a la BBDD
+    
+    String [][] arrayResultado;
+    
+    //Arraylist para guardar el rsultado de la consulta
+    ArrayList <String[]> lista = new ArrayList();
+    
+    private void consulta1(){
+        String user = campoUsuario.getText();
+        String password =  String.valueOf(campoContrasena.getPassword());
+        
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            //inicio los parámetros de la conexión
+            conexion = DriverManager.getConnection("jdbc:mysql://localhost/videoclub", "root", "");
+            
+            //realizar la conexion
+            estado = conexion.createStatement();
+            
+            //realizo la consulta
+            resultado = estado.executeQuery("SELECT * FROM videoclub.usuarios WHERE DNI = '"+user+"' && DNI= '"+password+"'");
+            resultado.last();
+            System.out.println(resultado.getRow());
+        }   
+        catch (ClassNotFoundException ex){
+            System.out.println("NO SE HA ENCONTRADO EL DRIVER");
+        }
+        catch (SQLException ex) {
+            System.out.println(ex.toString());
+            //System.out.println("NO SE HA PODIDO CONECTAR AL SERVIDOR");
+        }
+        
+    }
+    
+    
     /**
      * Creates new form VentanaInicio
      */
@@ -28,21 +74,79 @@ public class VentanaInicio extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        usuario = new javax.swing.JLabel();
+        contrasena = new javax.swing.JLabel();
+        campoUsuario = new javax.swing.JTextField();
+        campoContrasena = new javax.swing.JPasswordField();
+        okButton = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        usuario.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        usuario.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        usuario.setText("COTRASEÑA");
+        usuario.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
+        contrasena.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        contrasena.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        contrasena.setText("USUARIO");
+        contrasena.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
+        campoUsuario.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+
+        okButton.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        okButton.setText("OK");
+        okButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                okButtonMousePressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(contrasena, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(campoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(usuario, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(campoContrasena))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(80, 80, 80)
+                        .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(contrasena, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(campoUsuario)
+                        .addGap(1, 1, 1)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(usuario, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
+                    .addComponent(campoContrasena))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(52, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void okButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_okButtonMousePressed
+        consulta1();
+    }//GEN-LAST:event_okButtonMousePressed
 
     /**
      * @param args the command line arguments
@@ -80,5 +184,10 @@ public class VentanaInicio extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPasswordField campoContrasena;
+    private javax.swing.JTextField campoUsuario;
+    private javax.swing.JLabel contrasena;
+    private javax.swing.JButton okButton;
+    private javax.swing.JLabel usuario;
     // End of variables declaration//GEN-END:variables
 }
